@@ -1,5 +1,5 @@
 // Get the packages we need
-var express = require('express'),
+const express = require('express'),
     router = express.Router(),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser');
@@ -7,18 +7,20 @@ var express = require('express'),
 // Read .env file
 require('dotenv').config();
 
+const errorHandler = require('./middleware/errorHandler').errorHandler;
+
 // Create our Express application
-var app = express();
+const app = express();
 
 // Use environment defined port or 3000
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 // Connect to a MongoDB --> Uncomment this once you have a connection string!!
 mongoose.connect(process.env.MONGODB_URI,  { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 
 // Allow CORS so that backend and frontend could be put on different servers
-var allowCrossDomain = function (req, res, next) {
+const allowCrossDomain = function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
@@ -34,6 +36,8 @@ app.use(bodyParser.json());
 
 // Use routes as a module (see index.js)
 require('./routes')(app, router);
+
+app.use(errorHandler);
 
 // Start the server
 app.listen(port);
