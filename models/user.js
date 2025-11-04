@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 
 // Define our user schema
 const userSchema = new mongoose.Schema({
-    name: String,
-    email: String,
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     pendingTasks: [String],
     dateCreated: { type: Date, default: Date.now }
 });

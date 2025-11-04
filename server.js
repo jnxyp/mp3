@@ -19,6 +19,10 @@ const port = process.env.PORT || 3000;
 mongoose.connect(process.env.MONGODB_URI,  { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 
+// Load models
+require('./models/user');
+require('./models/task');
+
 // Allow CORS so that backend and frontend could be put on different servers
 const allowCrossDomain = function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

@@ -1,13 +1,9 @@
-const { CustomError } = require('../utils/CustomError');
-
 module.exports = function (router) {
 
     var homeRoute = router.route('/');
 
     homeRoute.get(function (req, res) {
-        var connectionString = process.env.TOKEN;
-        throw new CustomError('This is a custom error message', 500);
-        res.json({ message: 'My connection string is ' + connectionString });
+        res.json({ message: 'Task Management API for CS 409 MP3 by Yipeng is up and running', data: null });
     });
 
     return router;
