@@ -103,18 +103,19 @@ module.exports = function (router) {
                 return next(new CustomError('User not found', 404));
             }
 
+            const oldPendingTasks = oldUser.pendingTasks || [];
+
             if (req.body.pendingTasks) {
                 req.body.pendingTasks = [...new Set(req.body.pendingTasks)];
             }
 
-            const updatedUser = await User.findByIdAndUpdate(
-                req.params.userId,
-                req.body,
-                { new: true, runValidators: true }
-            );
+            oldUser.name = req.body.name;
+            oldUser.email = req.body.email;
+            oldUser.pendingTasks = req.body.pendingTasks || [];
 
-            if (req.body.pendingTasks) {
-                const oldPendingTasks = oldUser.pendingTasks || [];
+            const updatedUser = await oldUser.save();
+
+            if (req.body.pendingTasks !== undefined) {
                 const newPendingTasks = req.body.pendingTasks || [];
 
                 const removedTasks = oldPendingTasks.filter(taskId => !newPendingTasks.includes(taskId));

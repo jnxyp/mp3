@@ -112,15 +112,19 @@ module.exports = function (router) {
                 return next(new CustomError('Task not found', 404));
             }
 
-            const updatedTask = await Task.findByIdAndUpdate(
-                req.params.taskId,
-                req.body,
-                { new: true, runValidators: true }
-            );
-
             const oldAssignedUser = oldTask.assignedUser ? oldTask.assignedUser.toString() : '';
-            const newAssignedUser = updatedTask.assignedUser ? updatedTask.assignedUser.toString() : '';
             const oldCompleted = oldTask.completed;
+
+            oldTask.name = req.body.name;
+            oldTask.description = req.body.description !== undefined ? req.body.description : oldTask.description;
+            oldTask.deadline = req.body.deadline;
+            oldTask.completed = req.body.completed !== undefined ? req.body.completed : oldTask.completed;
+            oldTask.assignedUser = req.body.assignedUser !== undefined ? req.body.assignedUser : oldTask.assignedUser;
+            oldTask.assignedUserName = req.body.assignedUserName !== undefined ? req.body.assignedUserName : oldTask.assignedUserName;
+
+            const updatedTask = await oldTask.save();
+
+            const newAssignedUser = updatedTask.assignedUser ? updatedTask.assignedUser.toString() : '';
             const newCompleted = updatedTask.completed;
 
             if (oldAssignedUser && (oldAssignedUser !== newAssignedUser || (!oldCompleted && newCompleted))) {
